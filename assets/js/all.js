@@ -126,7 +126,6 @@ var app = {
 
     var api = "".concat(url, "/api/").concat(path, "/admin/product/").concat(id);
     var vm = this;
-    console.log(vm.data.newProduct);
     this.loading(true);
     axios.put(api, {
       data: vm.data.newProduct[0]
