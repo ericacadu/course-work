@@ -63,7 +63,7 @@ var app = {
             token = _res$data.token,
             expired = _res$data.expired;
         document.cookie = "bistroToken=".concat(token, "; expired=").concat(new Date(expired));
-        location.assign('/');
+        location.assign('./');
       } else {
         alert(res.data.message);
       }
