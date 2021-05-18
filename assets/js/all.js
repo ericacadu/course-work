@@ -113,7 +113,7 @@ var app = {
     var vm = this;
     axios.get(api).then(function (res) {
       vm.data.products = res.data.products;
-      vm.renderProducts(vm.data.products); 
+      vm.renderProducts(res.data.products); 
     })["catch"](function (err) {
       console.log(err);
     });
@@ -126,7 +126,7 @@ var app = {
     console.log(vm.data.newProduct);
     this.loading(true);
     axios.put(api, {
-      data: vm.data.newProduct
+      data: vm.data.newProduct[0]
     }).then(function (res) {
       if (res.data.success) {
         vm.getProducts();
@@ -158,7 +158,6 @@ var app = {
     }).then(function (res) {
       if (res.data.success) {
         vm.getProducts();
-        vm.resetForm();
       } else {
         alert(res.data.message);
 
@@ -202,12 +201,17 @@ var app = {
     this.updateProduct(id);
   },
   renderProducts: function renderProducts(data) {
+    var money = function money(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
     var cont = '';
     productList.innerHTML = '';
     data.forEach(function (item) {
-      cont += "\n\t\t\t<li class=\"list-group-item bg-transparent d-flex align-items-center\">\n        <div class=\"col-5\">".concat(item.title, "</div>\n        <div class=\"col-2\">").concat(item.origin_price, "</div>\n        <div class=\"col-2\">").concat(item.price, "</div>\n        <div class=\"col-2 text-center\">\n          <div class=\"switch-group mx-auto\">\n            <input data-switch=\"").concat(item.id, "\" type=\"checkbox\"\n            ").concat(item.is_enable ? 'checked' : '', ">\n            <span class=\"ico_switch\"></span>\n          </div>\n        </div>\n        <div class=\"col-1 text-center material-icons text-warning\" role=\"button\" data-remove=\"").concat(item.id, "\">\n          delete\n        </div>\n      </li>");
+      cont += "\n\t\t\t<li class=\"list-group-item bg-transparent d-flex align-items-center\">\n        <div class=\"col-5\">".concat(item.title, "</div>\n        <div class=\"col-2\">").concat(money(item.origin_price), "</div>\n        <div class=\"col-2\">").concat(money(item.price), "</div>\n        <div class=\"col-2 text-center\">\n          <div class=\"switch-group mx-auto\">\n            <input data-switch=\"").concat(item.id, "\" type=\"checkbox\"\n            ").concat(item.is_enable ? 'checked' : '', ">\n            <span class=\"ico_switch\"></span>\n          </div>\n        </div>\n        <div class=\"col-1 text-center material-icons text-warning\" role=\"button\" data-remove=\"").concat(item.id, "\">\n          delete\n        </div>\n      </li>");
     });
     productList.innerHTML = cont;
+    this.resetForm();
     this.loading(false);
   },
   init: function init() {

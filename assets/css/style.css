@@ -9275,7 +9275,7 @@ body {
 
 section {
   max-width: 640px !important;
-  min-width: 480px;
+  min-width: 320px;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
   -webkit-flex-flow: column;
