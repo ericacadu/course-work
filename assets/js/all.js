@@ -37,7 +37,7 @@ var app = {
     form: {}
   },
   loading: function loading() {
-    var status = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    var status = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
     if (status) {
       _loading.classList.remove('d-none');
@@ -56,7 +56,7 @@ var app = {
       username: username.value,
       password: password.value
     };
-    this.loading();
+    this.loading(true);
     axios.post(api, vm.data.form).then(function (res) {
       if (res.data.success) {
         var _res$data = res.data,
@@ -74,7 +74,7 @@ var app = {
   logout: function logout() {
     var _this = this;
 
-    this.loading();
+    this.loading(true);
     axios.post("".concat(url, "/logout")).then(function (res) {
       if (res.data.success) {
         location.assign('login.html');
@@ -92,7 +92,7 @@ var app = {
 
     var token = document.cookie.replace(/(?:(?:^|.*;\s*)bistroToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
     axios.defaults.headers.common['Authorization'] = token;
-    this.loading(); 
+    this.loading(true); 
 
     axios.post("".concat(url, "/api/user/check")).then(function (res) {
       if (res.data.success) {
@@ -124,7 +124,7 @@ var app = {
     var api = "".concat(url, "/api/").concat(path, "/admin/product/").concat(id);
     var vm = this;
     console.log(vm.data.newProduct);
-    this.loading();
+    this.loading(true);
     axios.put(api, {
       data: vm.data.newProduct
     }).then(function (res) {
@@ -152,7 +152,7 @@ var app = {
       price: parseInt(price.value),
       unit: '杯'
     };
-    this.loading();
+    this.loading(true);
     axios.post(api, {
       data: vm.data.newProduct
     }).then(function (res) {
@@ -180,7 +180,7 @@ var app = {
 
     var api = "".concat(url, "/api/").concat(path, "/admin/product/").concat(id);
     var vm = this;
-    this.loading();
+    this.loading(true);
     axios["delete"](api).then(function (res) {
       if (res.data.success) {
         vm.getProducts();
