@@ -101,8 +101,11 @@ var app = {
         checkStatus.innerHTML = '已登入';
       } else {
         checkStatus.innerHTML = res.data.message;
+        alert(res.data.message);
 
         _this2.loading(false);
+
+        location.assign('login.html');
       }
     })["catch"](function (err) {
       console.log(err);
