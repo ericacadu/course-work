@@ -215,7 +215,7 @@ var app = {
 
     var pathname = location.pathname;
 
-    if (pathname.includes('login.html')) {
+    if (pathname.includes('login')) {
       username.value = 'bistro@gmail.com';
       password.value = 'bistro';
       signInBtn.addEventListener('click', function () {
