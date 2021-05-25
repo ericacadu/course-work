@@ -60,7 +60,7 @@ var app = {
     };
     this.loading(true);
     axios.post(api, vm.data.form).then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success) {
         var _res$data = res.data,
             token = _res$data.token,
             expired = _res$data.expired;
@@ -80,7 +80,7 @@ var app = {
 
     this.loading(true);
     axios.post("".concat(url, "/logout")).then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success) {
         document.cookie = "bistroToken= ;expired=".concat(new Date(), " ");
         location.assign('login.html');
       } else {
@@ -100,7 +100,7 @@ var app = {
     this.loading(true); 
 
     axios.post("".concat(url, "/api/user/check")).then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success) {
         _this3.getProducts();
 
         checkStatus.innerHTML = '已登入';
@@ -120,8 +120,12 @@ var app = {
     var api = "".concat(url, "/api/").concat(path, "/admin/products");
     var vm = this;
     axios.get(api).then(function (res) {
-      vm.data.products = res.data.products;
-      vm.renderProducts(res.data.products); 
+      if (res.data.success) {
+        vm.data.products = res.data.products;
+        vm.renderProducts(res.data.products); 
+      } else {
+        alert(res.data.message);
+      }
     })["catch"](function (err) {
       console.log(err);
     });
@@ -135,7 +139,7 @@ var app = {
     axios.put(api, {
       data: vm.data.newProduct[0]
     }).then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success) {
         vm.getProducts();
       } else {
         alert(res.data.message);
@@ -163,7 +167,7 @@ var app = {
     axios.post(api, {
       data: vm.data.newProduct
     }).then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success) {
         vm.getProducts();
         vm.resetForm();
       } else {
@@ -189,7 +193,7 @@ var app = {
     var vm = this;
     this.loading(true);
     axios["delete"](api).then(function (res) {
-      if (res.data.success === true) {
+      if (res.data.success) {
         vm.getProducts();
       } else {
         alert(res.data.message);
