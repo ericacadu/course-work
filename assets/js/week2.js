@@ -65,7 +65,7 @@ var app = {
             token = _res$data.token,
             expired = _res$data.expired;
         document.cookie = "bistroToken=".concat(token, "; expired=").concat(new Date(expired));
-        location.assign('./');
+        location.assign('./product.html');
       } else {
         alert(res.data.message);
 
@@ -82,7 +82,7 @@ var app = {
     axios.post("".concat(url, "/logout")).then(function (res) {
       if (res.data.success) {
         document.cookie = "bistroToken= ;expired=".concat(new Date(), " ");
-        location.assign('login.html');
+        location.assign('./');
       } else {
         alert(res.data.message);
 
@@ -110,7 +110,7 @@ var app = {
 
         _this3.loading(false);
 
-        location.assign('login.html');
+        location.assign('./');
       }
     })["catch"](function (err) {
       console.log(err);
@@ -230,7 +230,7 @@ var app = {
 
     var pathname = location.pathname;
 
-    if (pathname.includes('login')) {
+    if (!pathname.includes('product')) {
       signInBtn.addEventListener('click', function () {
         return _this7.signin();
       });

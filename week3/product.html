@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理</title>
+    <link rel="stylesheet" href="../assets/css/week3.css">
+</head>
+<body>
+    <div class="container-fluid g-0" id="app">
+        <div class="row g-0" :data="check = true">
+    <div class="col-md-2">
+        <nav
+            class="navbar navbar-expand-md navbar-dark p-4 d-md-flex flex-md-column align-items-md-start shadow">
+            <div class="navbar-brand text-white p-0 m-0 fs-6">Bistro</div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#toggleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse d-md-flex align-items-md-start pt-md-5" id="toggleNavbar">
+                <ul class="navbar-nav d-md-flex flex-md-column mt-md-3">
+                    <li class="nav-item">
+                        <a href="product.html" class="nav-link px-0 active">商品管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-0 disabled">訂單管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-0 disabled">優惠券管理</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="col">
+        <div class="breadcrumb border-bottom py-2 px-4 bg-white">
+            <div class="status ms-auto d-flex align-items-center">
+                <span class="me-2 text-primary"
+                v-if="status === true">登入中</span>
+                <span class="me-2 text-danger"
+                v-else-if="status === false">請重新登入</span>
+                <button class="btn btn-sm btn-outline-secondary py-1" type="button" @click="logout">登出</button>
+            </div>
+        </div>
+        <div class="row g-0 py-2 px-4">
+            <button type="button" 
+            class="btn btn-primary w-auto ms-auto d-flex align-items-center"
+            @click="openModal(true)"
+            >
+                <i class="material-icons outline ">add_circle_outlined</i>新增商品
+            </button>
+        </div>
+        <div class="row g-0 py-2 px-4">
+            <ul class="list-group mb-3 product-list-title">
+                <li class="list-group-item bg-transparent border-0 d-flex align-items-center text-center text-nowrap">
+                    <div class="col-1 d-none d-md-block">分類</div>
+                    <div class="col-4 text-start">商品名稱</div>
+                    <div class="col-2">原價</div>
+                    <div class="col-2">售價</div>
+                    <div class="col-1">啟用</div>
+                    <div class="col-3 col-md-2"></div>
+                </li>
+            </ul>
+            <ul class="list-group list-group-flush shadow-sm">
+                <li class="list-group-item d-flex align-items-center text-center text-nowrap"
+                v-for="item in products" :key="item.id">
+                    <div class="col-1 d-none d-md-block">
+                        {{ item.category}}
+                    </div>
+                    <div class="col-4 text-start">
+                        {{ item.title }}
+                    </div>
+                    <div class="col-2">
+                        {{ item.origin_price }}
+                    </div>
+                    <div class="col-2">
+                        {{ item.price }}
+                    </div>
+                    <div class="col-1 d-flex align-items-center justify-content-center text-success h4 m-0">
+                        <span class="material-icons">
+                            {{ item.is_enable === true ? 'check_circle' : '' }}
+                        </span>
+                    </div>
+                    <div class="col-3 col-md-2 d-flex justify-content-around">
+                        <button type="button" class="btn btn-sm btn-outline-primary mr-1"  
+                        @click="openModal(false, item)">
+                            編輯
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                        @click="alertModal(item)">
+                            刪除
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+        <div class="loading d-none" id="loading">
+	<div class="spinner">
+		<span></span>
+		<p>loading</p>
+	</div>
+</div>        <div class="modal fade" id="productModal">
+	<div class="modal-dialog">
+		<div class="modal-content border-0">
+			<div class="modal-header">
+				<div class="modal-title">{{ modalTitle }}</div>
+				<span class="material-icons close"
+				data-bs-dismiss="modal"
+				role="button">clear</span>
+			</div>
+			<div class="modal-body">
+				<ul class="nav nav-pills" role="tablist">
+					<li class="nav-item">
+						<button class="nav-link active" 
+						data-bs-toggle="tab" 
+						data-bs-target="#basic" 
+						type="button" role="tab">商品資訊</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-link" 
+						data-bs-toggle="tab" 
+						data-bs-target="#info" 
+						type="button" role="tab">商品內容</button>
+					</li>
+					<li class="nav-item">
+						<button class="nav-link" 
+						data-bs-toggle="tab" 
+						data-bs-target="#photo" 
+						type="button" role="tab">商品圖片</button>
+					</li>
+				</ul>
+				<div class="tab-content mt-2">
+					<div class="tab-pane fade show active" id="basic" role="tabpanel">
+						<div class="form-row d-flex">
+                <div class="form-group w-100">
+                  <label class="py-2" for="name">名稱</label>
+                  <input
+                    type="text"
+                    class="form-control w-90"
+                    placeholder="輸入商品名稱"
+                    id="name"
+                    v-model="modalData.title"
+                  />
+                </div>
+                <div class="form-group w-100">
+                  <label class="py-2" for="category">類別</label>
+                  <select
+                    id="category"
+                    class="form-select text-secondary form-control w-90"
+                    v-model="modalData.category"
+                  >
+                    <option value="選擇類別" selected disabled>選擇類別</option>
+                    <option value="調酒">調酒</option>
+                    <option value="果汁">果汁</option>
+                    <option value="茶飲">茶飲</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row d-flex">
+                <div class="form-group w-100">
+                  <label class="py-2" for="origin_price">原價</label>
+                  <input
+                    type="text"
+                    class="form-control w-90"
+                    placeholder="輸入原價"
+                    id="origin_price"
+                    v-model.number="modalData.origin_price"
+                  />
+                </div>
+                <div class="form-group w-100">
+                  <label class="py-2" for="price">售價</label>
+                  <input
+                    type="text"
+                    class="form-control w-90"
+                    placeholder="輸入售價"
+                    id="price"
+                    v-model.number="modalData.price"
+                  />
+                </div>
+                <div class="form-group w-100">
+                  <label class="py-2" for="unit">單位</label>
+                  <select
+                    id="unit"
+                    class="form-select text-secondary form-control w-90"
+                    v-model="modalData.unit"
+                  >
+                    <option value="選擇單位" selected disabled>選擇單位</option>
+                    <option value="杯">杯</option>
+                    <option value="壺">壺</option>
+                    <option value="罐">罐</option>
+                  </select>
+                </div>
+              </div>
+              <hr />
+              <div class="form-row d-flex">
+								<label class="" for="switch">是否啟用</label>
+								<div class="switch-group">
+									<input type="checkbox" id="switch"
+                  v-model="modalData.is_enable"
+                  :checked="modalData.is_enable">
+									<div class="ico_switch"></div>
+								</div>
+              </div>
+					</div>
+					<div class="tab-pane fade" id="info" role="tabpanel">
+						<div class="form-group w-100">
+              <label class="py-2" for="description">商品描述</label>
+              <textarea
+                row="3"
+                class="form-control"
+                placeholder="輸入商品描述"
+                id="description"
+                v-model="modalData.description"
+              ></textarea>
+            </div>
+            <div class="form-group w-100">
+              <label class="py-2" for="info">說明內容</label>
+              <textarea
+                row="3"
+                class="form-control"
+                placeholder="輸入商品內容"
+                id="info"
+                v-model="modalData.content"
+                ></textarea>
+            </div>
+					</div>
+					<div class="tab-pane fade" id="photo" role="tabpanel">
+						<div class="form-group d-flex justify-content-start">
+              <div class="imgs-empty"
+              v-if="!modalData.imagesUrl.length"
+              v-for="(img, i) in 3" :key="i">
+              <span class="material-icons">photo</span>
+            </div>
+
+              <div class="imgs-fill"
+              v-else 
+              v-for="(img, key) in modalData.imagesUrl"
+              :key="key"> 
+                <span class="material-icons" role="button"
+                @click="removeImage(img, key)">
+                  remove
+                </span>
+                <img class="img-thumbnail" :src="img" alt="">
+              </div> 
+            </div>
+            <div class="form-group">
+              <label class="py-2" for="imagesUrl">圖片連結</label>
+              <div class="input-group">
+                <input type="text" class="form-control"
+                placeholder="輸入圖片連結"
+                v-model="tempUrl"
+                :disabled="modalData.imagesUrl.length >= 3">
+                <button class="btn btn-outline-secondary"
+                :disabled="modalData.imagesUrl.length >= 3"
+                @click="uploadImage">
+                  上傳連結
+                </button>
+              </div>
+              
+            </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+        data-bs-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary"
+        @click="updateProduct">儲存</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+        <div class="modal fade" id="deleteModal">
+	<div class="modal-dialog">
+		<div class="modal-content border-0">
+			<div class="modal-header">
+				<div class="modal-title">{{ modalTitle }}</div>
+				<span class="material-icons close"
+				data-bs-dismiss="modal"
+				role="button">clear</span>
+			</div>
+			<div class="modal-body">
+                <p>
+                    是否刪除
+                    <span class="text-danger font-weight-bold">
+                      {{ deleteData.title }}
+                    </span>
+                    {{ modalText }}？
+                    <span class="text-secondary">(刪除後將無法恢復)</span>
+                  </p>
+			</div>
+			<div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+        data-bs-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-danger"
+        @click="deleteProduct(deleteData.id)">確定刪除</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/vendors.js"></script>
+    <script src="../assets/js/week3.js" type="module"></script>
+</body>
+</html>
