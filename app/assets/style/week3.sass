@@ -1,0 +1,257 @@
+@import 'https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp'
+@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&amp;display=swap'
+@import 'node_modules/bootstrap/scss/bootstrap'
+
+$primary: #003789
+$focus: #63d2ff
+$secondary: desaturate(lighten($primary, 10%), 70%)
+$bgColor: desaturate(lighten($primary, 70%), 70%) 
+$gray: desaturate($primary, 80%) 
+$switch: 20px
+$fs-sm: 0.95rem
+
+*
+	// outline: 1px solid red
+
+body
+	background: $bgColor
+	color: $gray
+	font-weight: 400
+	position: relative
+
+.container
+	display: flex
+	align-items: center
+	justify-content: center
+	min-height: 100vh
+
+.material-icons
+  font-size: 1.2rem
+  &.outline
+    margin-right: -1rem
+
+.product-list-title
+  background: rgba($secondary, .1)
+.list-group-item
+  color: $gray
+	
+.signin
+	max-width: 480px
+	min-width: 320px
+
+.navbar
+  background: $gray
+  font-weight: 300
+  @media (min-width: 768px)
+    min-height: 100vh
+    height: 100%
+  button
+    transition: all .15s
+    &:focus
+      box-shadow: 0 0 0 transparent
+      border-color: rgba($bgColor, .5)
+  &-brand
+    letter-spacing: 0.2rem
+  &-collapse
+    font-weight: 400
+    .nav-link
+      font-size: 0.93rem
+
+.breadcrumb
+  font-size: $fs-sm
+
+.btn
+  font-size: $fs-sm
+  &:focus
+    box-shadow: 0 0 0 transparent
+  &-primary
+    background: $secondary
+    border-color: $secondary
+    &:hover, &:focus
+      background: $secondary
+      border-color: $secondary
+  &-outline-primary
+    background: #fff
+    border-color: $secondary
+    color: $secondary
+    &:hover, &:focus
+      background: $secondary
+      border-color: $secondary
+      color: white
+
+.nav-pills .nav-link
+	background: rgba($bgColor, .5)
+	color: lighten($gray, 30%)
+	&.active
+		background: rgba($primary, .7)
+
+.form-content
+	background: darken($bgColor, 5%)
+
+.form-control
+	&:focus
+		border-color: $focus
+		box-shadow: 0 0 5px rgba($focus, .3)
+
+.w-90
+  width: 90%
+
+.switch-group
+	position: relative
+	width: $switch * 1.8
+	height: $switch
+	margin: 0 .5em
+
+input[type="checkbox"]
+	width: 100%
+	height: 100%
+	opacity: 0
+	position: relative
+	z-index: 2
+	cursor: pointer
+	&:checked + .ico_switch
+		background: $primary
+		&::after
+			right: 2px
+			background: #fff
+			box-shadow: -2px 0 4px rgba(black, .1)
+	& + .ico_switch
+		position: absolute
+		left: 0
+		top: 0
+		z-index: 1
+		display: inline-block
+		width: 100%
+		height: 100%
+		background: lighten($gray, 55%)
+		border-radius: $switch
+		transition: all .15s
+		&::after
+			content: ''
+			display: block
+			width: calc(#{$switch} - 4px)
+			height: calc(100% - 4px)
+			background: rgba(#fff, 1)
+			border-radius: 50%
+			position: absolute
+			top : 2px
+			right: calc(100% - #{$switch - 2px})
+			transition: all .15s
+
+.list-header .list-group-item
+	background: lighten($gray, 78%)
+
+.list-group-item .switch-group
+	transform: scale(0.9)
+	
+.loading
+	position: fixed
+	z-index: 99
+	width: 100vw
+	height: 100vh
+	left: 0
+	top: 0
+	background: rgba(darken($primary, 50%), .8)
+	color: #fff
+	display: flex
+	align-items: center
+	justify-content: center
+	letter-spacing: 2px
+	span
+		display: block
+		width: 1.5rem
+		height: 1.5rem
+		margin: 0 auto
+		border-radius: 50% 0
+		animation: scale 2s infinite
+	p
+		margin-top: 0.5rem
+
+.modal-header
+  background: $gray
+  color: white
+  .close
+    padding: 0.3rem
+    border-radius: 50%
+    background: rgba(white, .1)
+    transition: all .1s
+    &:hover
+      background: rgba(white, .2)
+
+.modal-footer
+  background: $bgColor
+  border: 0
+
+.modal .nav
+  &-pills
+    background: rgba($secondary, .1)
+    border-radius: 0.4rem
+    padding: 0.4rem
+  &-item + .nav-item
+    margin-left: 0.4rem
+  &-link
+    font-size: 0.9rem
+    color: rgba($secondary, .7)
+    background: transparent
+    transition: all .1s
+    border-radius: 0.4rem
+    &.active
+      color: $primary
+      background: white
+
+.imgs
+  &-fill
+    width: calc((100% - 1rem) / 3)
+    position: relative
+    &:hover span
+      opacity: 1
+    & + .imgs-fill
+      margin-left: 0.5rem
+    img
+      position: relative
+      z-index: 1
+    span
+      position: absolute
+      right: 0
+      z-index: 2
+      width: 1.7rem
+      height: 1.7rem
+      margin: .7rem
+      display: flex
+      justify-content: center
+      align-items: center
+      color: white
+      border-radius: 50%
+      background: rgba(white, .4)
+      opacity: 0
+      transition: all .1s
+      
+  &-empty
+    width: calc((100% - 1rem) / 3)
+    display: flex
+    justify-content: center
+    align-items: center
+    min-height: 8rem
+    border: 2px dashed rgba($secondary, .1)
+    color: rgba($secondary, .1)
+    border-radius: 0.3rem
+    span
+      font-size: 2rem
+    & + .imgs-empty
+      margin-left: 0.5rem
+      
+@keyframes scale
+	0%, 100%
+		transform: scaleX(-1)
+		background: $focus
+	50%
+		transform: scaleX(1)
+		background: $primary
+
+@keyframes fadeIn
+	0%
+		opacity: 0
+	100%
+		opacity: 1
+	
+	

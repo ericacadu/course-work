@@ -1,0 +1,95 @@
+---
+title: 商品管理
+layout: ./app/week3/layout.ejs
+engine: ejs
+current: product
+---
+<div class="row g-0" :data="check = true">
+    <div class="col-md-2">
+        <nav
+            class="navbar navbar-expand-md navbar-dark p-4 d-md-flex flex-md-column align-items-md-start shadow">
+            <div class="navbar-brand text-white p-0 m-0 fs-6">Bistro</div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#toggleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse d-md-flex align-items-md-start pt-md-5" id="toggleNavbar">
+                <ul class="navbar-nav d-md-flex flex-md-column mt-md-3">
+                    <li class="nav-item">
+                        <a href="product.html" class="nav-link px-0 active">商品管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-0 disabled">訂單管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-0 disabled">優惠券管理</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="col">
+        <div class="breadcrumb border-bottom py-2 px-4 bg-white">
+            <div class="status ms-auto d-flex align-items-center">
+                <span class="me-2 text-primary"
+                v-if="status === true">登入中</span>
+                <span class="me-2 text-danger"
+                v-else-if="status === false">請重新登入</span>
+                <button class="btn btn-sm btn-outline-secondary py-1" type="button" @click="logout">登出</button>
+            </div>
+        </div>
+        <div class="row g-0 py-2 px-4">
+            <button type="button" 
+            class="btn btn-primary w-auto ms-auto d-flex align-items-center"
+            @click="openModal(true)"
+            >
+                <i class="material-icons outline ">add_circle_outlined</i>新增商品
+            </button>
+        </div>
+        <div class="row g-0 py-2 px-4">
+            <ul class="list-group mb-3 product-list-title">
+                <li class="list-group-item bg-transparent border-0 d-flex align-items-center text-center text-nowrap">
+                    <div class="col-1 d-none d-md-block">分類</div>
+                    <div class="col-4 text-start">商品名稱</div>
+                    <div class="col-2">原價</div>
+                    <div class="col-2">售價</div>
+                    <div class="col-1">啟用</div>
+                    <div class="col-3 col-md-2"></div>
+                </li>
+            </ul>
+            <ul class="list-group list-group-flush shadow-sm">
+                <li class="list-group-item d-flex align-items-center text-center text-nowrap"
+                v-for="item in products" :key="item.id">
+                    <div class="col-1 d-none d-md-block">
+                        {{ item.category}}
+                    </div>
+                    <div class="col-4 text-start">
+                        {{ item.title }}
+                    </div>
+                    <div class="col-2">
+                        {{ item.origin_price }}
+                    </div>
+                    <div class="col-2">
+                        {{ item.price }}
+                    </div>
+                    <div class="col-1 d-flex align-items-center justify-content-center text-success h4 m-0">
+                        <span class="material-icons">
+                            {{ item.is_enable === true ? 'check_circle' : '' }}
+                        </span>
+                    </div>
+                    <div class="col-3 col-md-2 d-flex justify-content-around">
+                        <button type="button" class="btn btn-sm btn-outline-primary mr-1"  
+                        @click="openModal(false, item)">
+                            編輯
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                        @click="alertModal(item)">
+                            刪除
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
