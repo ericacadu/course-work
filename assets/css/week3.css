@@ -9534,6 +9534,16 @@ input[type="checkbox"] {
   .imgs-empty + .imgs-empty {
     margin-left: 0.5rem; }
 
+.page-item .page-link {
+  color: #42587a; }
+  .page-item .page-link:focus {
+    -webkit-box-shadow: 0 0 0 transparent;
+            box-shadow: 0 0 0 transparent; }
+
+.page-item.active .page-link {
+  background: #42587a;
+  border-color: #42587a; }
+
 @-webkit-keyframes scale {
   0%, 100% {
     -webkit-transform: scaleX(-1);

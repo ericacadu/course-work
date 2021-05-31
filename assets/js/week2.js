@@ -1,5 +1,3 @@
-"use strict";
-
 var getElemt = function getElemt(elemt) {
   return document.querySelector(elemt);
 };
