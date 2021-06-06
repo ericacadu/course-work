@@ -13,7 +13,8 @@ export default {
         v-for="(num, idx) in pages.total_pages" 
         :key="idx"
         :class="num == pages.current_page ? 'active' : ''">
-        <a class="page-link" href="#">{{ num }}</a>
+        <a class="page-link" href="#"
+        @click.prevent="$emit('get-products', num)">{{ num }}</a>
       </li>
       <li class="page-item"
       :class="pages.has_next ? '' : 'disabled'">

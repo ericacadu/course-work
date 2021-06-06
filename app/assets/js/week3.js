@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const url = 'https://vue3-course-api.hexschool.io'
 const path = 'bistro'
 let productModal = {}
@@ -6,7 +7,7 @@ const app = {
   data () {
     return {
       check: true,
-      status: '',
+      status: true,
       form: {},
       user: {
         username: 'admin',
@@ -27,7 +28,7 @@ const app = {
     signin () {
       const api = `${url}/admin/signin`
       if (this.user.username === 'admin' &&
-          this.user.password === 'admin') {
+        this.user.password === 'admin') {
         // 帳密僅供作業及加速測試用，正式上線版本會移除
         this.form = {
           username: 'bistro@gmail.com',
@@ -37,8 +38,14 @@ const app = {
         this.form = this.user
       }
       axios.post(api, this.form).then(res => {
-        if (!res.data.success) { alert(res.data.message) }
-        const { token, expired } = res.data
+        if (!res.data.success) {
+          alert(res.data.message)
+          return
+        }
+        const {
+          token,
+          expired
+        } = res.data
         document.cookie = `bistroToken=${token}; expires=${new Date(expired)}`
         location.assign('product.html')
       }).catch(err => {
@@ -58,8 +65,8 @@ const app = {
       })
     },
     checkLogin () {
-      const token = document.cookie.replace(/(?:(?:^|.*;\s*)bistroToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-      axios.defaults.headers.common['Authorization'] = token
+      const token = document.cookie.replace(/(?:(?:^|.*;\s*)bistroToken\s*\=\s*([^;]*).*$)|^.*$/, '$1')
+      axios.defaults.headers.common.Authorization = token
       axios.post(`${url}/api/user/check`).then(res => {
         if (res.data.success) {
           this.status = true
@@ -85,23 +92,24 @@ const app = {
       })
     },
     updateProduct () {
-      const vm = this
       let api = ''
       let method = ''
-      if (vm.isNew === true) {
+      if (this.isNew) {
         method = 'post'
         api = `${url}/api/${path}/admin/product`
       } else {
         method = 'put'
-        api = `${url}/api/${path}/admin/product/${vm.modalData.id}`
+        api = `${url}/api/${path}/admin/product/${this.modalData.id}`
       }
-      axios[method](api, { data: vm.modalData }).then(res => {
+      axios[method](api, {
+        data: this.modalData
+      }).then(res => {
         if (res.data.success) {
           this.getProducts()
+          this.closeModal(productModal)
         } else {
           alert(res.data.message)
         }
-        this.closeModal(productModal)
       }).catch(err => {
         console.log(err)
       })
@@ -109,8 +117,10 @@ const app = {
     deleteProduct (id) {
       const api = `${url}/api/${path}/admin/product/${id}`
       axios.delete(api).then(res => {
-        if (!res.data.success) { alert(res.data.message) }
-        console.log(`已刪除${this.deleteData.title}商品`)
+        if (!res.data.success) {
+          alert(res.data.message)
+        }
+        alert(`已刪除${this.deleteData.title}商品`)
         this.getProducts()
         this.closeModal(deleteModal)
       }).catch(err => {
@@ -147,7 +157,7 @@ const app = {
         imagesUrl: []
       }
       this.tempUrl = ''
-      if (isNew === true) {
+      if (isNew) {
         this.isNew = true
         this.modalTitle = '新增商品'
       } else {
@@ -162,7 +172,9 @@ const app = {
       this.updateTabs()
     },
     alertModal (item) {
-      this.deleteData = {...item}
+      this.deleteData = {
+        ...item
+      }
       this.modalTitle = '刪除商品'
       this.modalText = '商品'
       deleteModal.show()
@@ -172,7 +184,7 @@ const app = {
     }
   },
   mounted () {
-    if (this.check === true) {
+    if (this.check) {
       this.checkLogin()
       productModal = new bootstrap.Modal(document.getElementById('productModal'))
       deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
