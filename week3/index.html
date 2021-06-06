@@ -10,32 +10,27 @@
 <body>
     <div class="container-fluid g-0" id="app">
         <div class="container" :data="check = false">
-    <div class="form-content signin text-center w-75 mx-auto p-4 rounded-3" 
-    @keyup.enter="signin">
+    <div class="form-content signin text-center w-75 mx-auto p-4 rounded-3" @keyup.enter="signin">
         <div class="form-floating">
-            <input type="username" 
-            class="form-control m-0 mb-3"
-            v-model="user.username">
+            <input type="email" class="form-control m-0 mb-3" v-model="user.username">
             <label for="username">Username</label>
         </div>
         <div class="form-floating">
-            <input type="password" 
-            class="form-control m-0"
-            v-model="user.password">
+            <input type="password" class="form-control m-0" v-model="user.password">
             <label for="password">Password</label>
         </div>
-        <button class="btn w-50 py-2 mt-3 mx-auto btn-primary rounded-3" id="signinBtn"
-        @click="signin">
+        <button type="button" class="btn w-50 py-2 mt-3 mx-auto btn-primary rounded-3" id="signinBtn" @click.prevent="signin">
             登入
         </button>
     </div>
-</div>
-        <div class="loading d-none" id="loading">
+</div>        <div class="loading d-none" id="loading">
 	<div class="spinner">
 		<span></span>
 		<p>loading</p>
 	</div>
-</div>        <div class="modal fade" id="productModal">
+</div>        <div class="modal fade" id="productModal"
+    data-bs-backdrop="static" 
+    data-bs-keyboard="false">
 	<div class="modal-dialog">
 		<div class="modal-content border-0">
 			<div class="modal-header">
@@ -96,7 +91,8 @@
                 <div class="form-group w-100">
                   <label class="py-2" for="origin_price">原價</label>
                   <input
-                    type="text"
+                    type="number"
+                    min="0"
                     class="form-control w-90"
                     placeholder="輸入原價"
                     id="origin_price"
@@ -106,7 +102,8 @@
                 <div class="form-group w-100">
                   <label class="py-2" for="price">售價</label>
                   <input
-                    type="text"
+                    type="number"
+                    min="0"
                     class="form-control w-90"
                     placeholder="輸入售價"
                     id="price"
@@ -150,12 +147,12 @@
               ></textarea>
             </div>
             <div class="form-group w-100">
-              <label class="py-2" for="info">說明內容</label>
+              <label class="py-2" for="productInfo">說明內容</label>
               <textarea
                 row="3"
+                id="productInfo"
                 class="form-control"
                 placeholder="輸入商品內容"
-                id="info"
                 v-model="modalData.content"
                 ></textarea>
             </div>
@@ -183,12 +180,14 @@
               <label class="py-2" for="imagesUrl">圖片連結</label>
               <div class="input-group">
                 <input type="text" class="form-control"
+                id="imagesUrl"
                 placeholder="輸入圖片連結"
                 v-model="tempUrl"
                 :disabled="modalData.imagesUrl.length >= 3">
                 <button class="btn btn-outline-secondary"
+                type="button"
                 :disabled="modalData.imagesUrl.length >= 3"
-                @click="uploadImage">
+                @click.prevent="uploadImage">
                   上傳連結
                 </button>
               </div>

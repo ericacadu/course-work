@@ -12,7 +12,7 @@ var app = {
   data: function data() {
     return {
       check: true,
-      status: '',
+      status: true,
       form: {},
       user: {
         username: 'admin',
@@ -45,6 +45,7 @@ var app = {
       axios.post(api, this.form).then(function (res) {
         if (!res.data.success) {
           alert(res.data.message);
+          return;
         }
 
         var _res$data = res.data,
@@ -71,8 +72,8 @@ var app = {
     checkLogin: function checkLogin() {
       var _this = this;
 
-      var token = document.cookie.replace(/(?:(?:^|.*;\s*)bistroToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-      axios.defaults.headers.common['Authorization'] = token;
+      var token = document.cookie.replace(/(?:(?:^|.*;\s*)bistroToken\s*\=\s*([^;]*).*$)|^.*$/, '$1');
+      axios.defaults.headers.common.Authorization = token;
       axios.post("".concat(url, "/api/user/check")).then(function (res) {
         if (res.data.success) {
           _this.status = true;
@@ -102,28 +103,27 @@ var app = {
     updateProduct: function updateProduct() {
       var _this3 = this;
 
-      var vm = this;
       var api = '';
       var method = '';
 
-      if (vm.isNew === true) {
+      if (this.isNew) {
         method = 'post';
         api = "".concat(url, "/api/").concat(path, "/admin/product");
       } else {
         method = 'put';
-        api = "".concat(url, "/api/").concat(path, "/admin/product/").concat(vm.modalData.id);
+        api = "".concat(url, "/api/").concat(path, "/admin/product/").concat(this.modalData.id);
       }
 
       axios[method](api, {
-        data: vm.modalData
+        data: this.modalData
       }).then(function (res) {
         if (res.data.success) {
           _this3.getProducts();
+
+          _this3.closeModal(productModal);
         } else {
           alert(res.data.message);
         }
-
-        _this3.closeModal(productModal);
       })["catch"](function (err) {
         console.log(err);
       });
@@ -137,7 +137,7 @@ var app = {
           alert(res.data.message);
         }
 
-        console.log("\u5DF2\u522A\u9664".concat(_this4.deleteData.title, "\u5546\u54C1"));
+        alert("\u5DF2\u522A\u9664".concat(_this4.deleteData.title, "\u5546\u54C1"));
 
         _this4.getProducts();
 
@@ -183,7 +183,7 @@ var app = {
       };
       this.tempUrl = '';
 
-      if (isNew === true) {
+      if (isNew) {
         this.isNew = true;
         this.modalTitle = '新增商品';
       } else {
@@ -210,7 +210,7 @@ var app = {
     }
   },
   mounted: function mounted() {
-    if (this.check === true) {
+    if (this.check) {
       this.checkLogin();
       productModal = new bootstrap.Modal(document.getElementById('productModal'));
       deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));

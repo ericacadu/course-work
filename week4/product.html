@@ -38,9 +38,9 @@
         <div class="breadcrumb border-bottom py-2 px-4 bg-white">
             <div class="status ms-auto d-flex align-items-center">
                 <span class="me-2 text-primary"
-                v-if="status === true">登入中</span>
+                v-if="status">登入中</span>
                 <span class="me-2 text-danger"
-                v-else-if="status === false">請重新登入</span>
+                v-else-if="status">請重新登入</span>
                 <button class="btn btn-sm btn-outline-secondary py-1" type="button" @click="logout">登出</button>
             </div>
         </div>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="col-1 d-flex align-items-center justify-content-center text-success h4 m-0">
                         <span class="material-icons">
-                            {{ item.is_enable === true ? 'check_circle' : '' }}
+                            {{ item.is_enable ? 'check_circle' : '' }}
                         </span>
                     </div>
                     <div class="col-3 col-md-2 d-flex justify-content-around">
@@ -104,17 +104,17 @@
         </div>
     </div>
 </div>
-<product-modal 
+<modal-product 
     :modal-data="modalData"
     :modal-title="modalTitle"
     @update-product="updateProduct">
-</product-modal>
-<delete-modal
+</modal-product>
+<modal-delete
     :delete-data="deleteData"
     :modal-title="modalTitle"
-    :modal-text="Text"
+    :modal-text="modalTitle"
     @delete-product="deleteProduct">
-</delete-modal>    </div>
+</modal-delete>    </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>

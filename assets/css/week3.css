@@ -9486,8 +9486,13 @@ input[type="checkbox"] {
     z-index: 1; }
   .imgs-fill span {
     position: absolute;
-    right: 0;
     z-index: 2;
+    opacity: 0;
+    -webkit-transition: all .1s;
+    -o-transition: all .1s;
+    transition: all .1s; }
+  .imgs-fill .remove {
+    color: white;
     width: 1.7rem;
     height: 1.7rem;
     margin: .7rem;
@@ -9503,13 +9508,24 @@ input[type="checkbox"] {
     -webkit-align-items: center;
         -ms-flex-align: center;
             align-items: center;
-    color: white;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.4);
-    opacity: 0;
-    -webkit-transition: all .1s;
-    -o-transition: all .1s;
-    transition: all .1s; }
+    right: 0;
+    background: rgba(255, 255, 255, 0.4); }
+  .imgs-fill .img-mark {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center;
+    cursor: pointer;
+    margin-top: .5rem; }
 
 .imgs-empty {
   width: calc((100% - 1rem) / 3);
