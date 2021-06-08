@@ -1,0 +1,61 @@
+---
+title: 購物車
+layout: ./app/week5/layout.ejs
+engine: ejs
+current: cart
+---
+<div class="row g-0" :data="check = 'cart'">
+    <div class="col-md-2">
+        <nav
+            class="navbar navbar-expand-md navbar-dark p-4 d-md-flex flex-md-column align-items-md-start shadow">
+            <div class="navbar-brand text-white p-0 m-0 fs-6">Bistro</div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#toggleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse d-md-flex align-items-md-start pt-md-5" id="toggleNavbar">
+                <ul class="navbar-nav d-md-flex flex-md-column mt-md-3">
+                    <li class="nav-item">
+                        <a href="cart.html" class="nav-link px-0 active">購物車</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="product.html" class="nav-link px-0">商品管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-0 disabled">訂單管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link px-0 disabled">優惠券管理</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="col">
+        <div class="row g-0 py-2 px-4">
+            <ul class="col-8">
+                <!-- 產品列表 -->
+                <li class="card col-6" 
+                v-for="item in products" :key="item.id">
+                    <!-- <div class="card-img-top" style="height: 400px;"></div> -->
+                    <!-- <img class="card-img-top" :src="item.imageUrl" alt=""> -->
+                    <div class="card-body p-0">
+                        <div class="card-title">
+                            {{ item.title}}
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-sm btn-secondary">
+                                商品內容
+                            </button>
+                        </div>
+                    </div>
+                    
+                </li>
+            </ul>
+            <div class="col-5">
+                <!-- 購物車快速結帳 -->
+            </div>
+        </div>
+    </div>
+</div>
