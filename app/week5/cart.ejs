@@ -6,11 +6,9 @@ current: cart
 ---
 <div class="row g-0" :data="check = 'cart'">
     <div class="col-md-2">
-        <nav
-            class="navbar navbar-expand-md navbar-dark p-4 d-md-flex flex-md-column align-items-md-start shadow">
+        <nav class="navbar navbar-expand-md navbar-dark p-4 d-md-flex flex-md-column align-items-md-start shadow">
             <div class="navbar-brand text-white p-0 m-0 fs-6">Bistro</div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#toggleNavbar">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#toggleNavbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -33,29 +31,75 @@ current: cart
         </nav>
     </div>
     <div class="col">
-        <div class="row g-0 py-2 px-4">
-            <ul class="col-8">
-                <!-- 產品列表 -->
-                <li class="card col-6" 
-                v-for="item in products" :key="item.id">
-                    <!-- <div class="card-img-top" style="height: 400px;"></div> -->
-                    <!-- <img class="card-img-top" :src="item.imageUrl" alt=""> -->
-                    <div class="card-body p-0">
-                        <div class="card-title">
-                            {{ item.title}}
+        <div class="row g-0 p-3">
+            <!-- 產品列表 -->
+            <div class="col-5 col-md-7">
+                <ul class="row g-0 p-0">
+                    <li class="col-md-6 list-unstyled mb-3"
+                    v-for="(item, idx) in products" :key="item.id"
+                    :class="(idx % 2 !== 0) ? 'ps-md-3' : ''">
+                        <div class="card">
+                            <div class="card-img-top"
+                                style="height: 200px;background-position: center;background-size: 100% auto;background-repeat: no-repeat;"
+                                :style="{'backgroundImage': `url(${item.imageUrl})`}"></div>
+                            
+                            <div class="card-body">
+                                <p class="card-title">{{ item.title}}</p>
+                                原價：{{ item.origin_price }}
+                                售價：<span class="text-danger">{{ item.price }}</span>
+                            </div>
+                            <div class="card-footer text-end">
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                @click=openProduct(item.id)>
+                                    商品細節
+                                </button>
+                                <button type="button" class="btn btn-sm btn-primary ms-2"
+                                @click="addToCart(item, 1)">
+                                    加入購物車
+                                </button>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <button class="btn btn-sm btn-secondary">
-                                商品內容
-                            </button>
-                        </div>
-                    </div>
-                    
-                </li>
-            </ul>
-            <div class="col-5">
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-7 col-md-5 ps-3">
                 <!-- 購物車快速結帳 -->
+                <div class="border rounded p-3 bg-white sticky-top" v-if="!final_total">
+                    <h1 class="fs-5">購物車</h1>
+                    <p class="alert alert-secondary p-2 text-center m-0">尚未選購商品</p>
+                </div>
+                <div class="border rounded p-3 bg-white sticky-top" v-else>
+                    <h1 class="fs-5">購物車</h1>
+                    <ul class="list-group list-group-flush d-flex align-item-center">
+                        <li class="list-group-item px-0 d-flex"
+                        v-for="(item, key) in cart.carts" :key="item.product_id">
+                            <span class="col-6 m-0">{{ item.product.title }}</span>
+                            <span class="col-2">
+                                <input type="number" min="0" class="form-control py-0 px-1" 
+                                v-model.number="item.qty"
+                                @blur="updateUserCarts(item.id, item.qty)">
+                            </span>
+                            <span class="col-2 m-0 text-end">{{ item.product.price }}</span>
+                            <span class="col-2 material-icons text-secondary text-center"
+                            role="button"
+                            @click="deleteCartProduct(item.id)">cancel</span>
+                        </li>
+                    </ul>
+                    <hr>
+                    <ul class="list-unstyled text-end">
+                        <li>總價：{{ final_total }}</li>
+                    </ul>
+                    <button class="btn btn-lg w-100 btn-primary">結帳</button>
+                    <button class="btn btn-lg w-100 btn-outline-secondary mt-2"
+                    @click.prevent="deleteCart">清空購物車</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<modal-detail
+    :detail-data="detailData"
+    :prop-qty="detailData.qty"
+    @add-to-cart="addToCart">
+</modal-detail>

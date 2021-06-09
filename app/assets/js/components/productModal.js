@@ -101,8 +101,8 @@ export default {
                     <label class="" for="switch">是否啟用</label>
                     <div class="switch-group">
                       <input type="checkbox" id="switch"
-                      v-model="modalData.is_enable"
-                      :checked="modalData.is_enable">
+                      v-model="modalData.is_enabled"
+                      :checked="modalData.is_enabled">
                       <div class="ico_switch"></div>
                     </div>
                   </div>
