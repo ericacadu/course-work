@@ -11,10 +11,14 @@ const envOptions = {
     src: [
       `${srcPath}/**/*.html`,
       `${srcPath}/**/*.ejs`,
+      `${srcPath}/**/*.json`,
       `!${srcPath}/**/_*.ejs`
     ],
     path: distPath,
-    layoutSrc: `${srcPath}/**/*.html`
+    layoutSrc: [
+      `${srcPath}/**/*.html`,
+      `${srcPath}/**/*.json`
+    ]
   },
   style: {
     src: [

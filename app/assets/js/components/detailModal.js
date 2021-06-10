@@ -29,15 +29,18 @@ export default {
               </div>
               <input type="number" min="0" max="10" class="form-control"
                 v-model.number="qty" />
-              <button type="button" class="btn btn-lg w-100 mt-3 btn-primary"
-                @click="$emit('add-to-cart', detailData, qty)">
-              加入購物車</button>
+              <button type="button" class="btn btn-lg w-100 mt-3 btn-primary d-flex align-items-center justify-content-center"
+                @click="$emit('add-to-cart', detailData, qty)"
+                :disabled="spinItem == detailData.id">
+                <i class="spinner" 
+                :class="spinItem == detailData.id ? 'show' : 'fade d-none'"></i>
+                加入購物車</button>
             </div>
           </div>
         </div>
       </div>
     </div>`,
-  props: ['detailData'],
+  props: ['detailData', 'spinItem'],
   data () {
     return {
       qty: 1

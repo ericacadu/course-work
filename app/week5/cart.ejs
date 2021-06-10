@@ -51,7 +51,10 @@ current: cart
                                 <button type="button" class="btn btn-sm btn-outline-secondary" @click=openProduct(item.id)>
                                     商品細節
                                 </button>
-                                <button type="button" class="btn btn-sm btn-primary" @click="addToCart(item, 1)">
+                                <button type="button" class="btn btn-sm btn-primary d-flex align-items-center justify-content-center" @click="addToCart(item, 1)"
+                                :disabled="spinItem === item.id">
+                                    <i class="spinner"
+                                    :class="spinItem === item.id ? 'show' : 'fade d-none'"></i>
                                     加入購物車
                                 </button>
                             </div>
@@ -85,52 +88,97 @@ current: cart
                     <ul class="list-unstyled text-end">
                         <li>總價：{{ money(final_total) }}</li>
                     </ul>
-                    <button type="submit" class="btn btn-lg w-100 btn-primary" @click="isCheckout = true">結帳</button>
-                    <button type="button" class="btn btn-lg w-100 btn-outline-secondary mt-2"
-                    @click="deleteCart">清空購物車</button>
+                    <button type="button" class="btn btn-lg w-100 btn-primary" @click="isCheckout = true">結帳</button>
+                    <button type="button" class="btn btn-lg w-100 btn-outline-secondary mt-2 d-flex align-items-center justify-content-center"      @click="clearCart"
+                    :disabled="spinItem == true">
+                        <i class="spinner" 
+                        :class="spinItem == true ? 'show' : 'fade d-none'"></i>
+                        清空購物車
+                    </button>
                     <!-- 結帳 -->
                     <div class="mt-4" ref="checkout"
                     :class="isCheckout ? 'show' : 'fade d-none'">
                         <hr>
                         <h2 class="fs-5">結帳表單</h2>
-                        <v-form v-slot="{ errors }" @submit="onSubmit">
+                        <v-form v-slot="{ errors }" ref="form" @submit.prevent="onSubmit">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email</label>
                                 <v-field 
                                     id="email" 
-                                    name="email" 
+                                    name="Email" 
                                     type="email" 
                                     class="form-control" 
-                                    :class="{ 'is-invalid': errors['email'] }" placeholder="請輸入 Email" 
+                                    :class="{ 'is-invalid': errors['Email'] }" placeholder="請輸入 Email" 
                                     rules="email|required" 
                                     v-model="order.email"></v-field>
                                 <error-message 
-                                    name="email" 
+                                    name="Email" 
                                     class="invalid-feedback">
                                 </error-message>
                             </div>
 
                             <div class="mb-3">
                                 <label for="name" class="form-label">收件人姓名</label>
-                                <input id="name" name="姓名" type="text" class="form-control">
+                                <v-field 
+                                    id="name" 
+                                    name="姓名" 
+                                    type="text" 
+                                    class="form-control" 
+                                    :class="{ 'is-invalid': errors['姓名'] }" 
+                                    placeholder="請輸入姓名" 
+                                    rules="required" 
+                                    v-model="order.name"></v-field>
+                                <error-message 
+                                    name="姓名" 
+                                    class="invalid-feedback">
+                                </error-message>
                             </div>
 
                             <div class="mb-3">
                                 <label for="tel" class="form-label">收件人電話</label>
-                                <input id="tel" name="電話" type="text" class="form-control">
+                                <v-field 
+                                    id="tel" 
+                                    name="電話" 
+                                    type="tel" 
+                                    class="form-control"
+                                    :rules="isPhone"
+                                    :class="{ 'is-invalid': errors['電話'] }" 
+                                    placeholder="請輸入電話" 
+                                    v-model="order.tel"></v-field>
+                                <error-message 
+                                    name="電話" 
+                                    class="invalid-feedback">
+                                </error-message>
                             </div>
 
                             <div class="mb-3">
                                 <label for="address" class="form-label">收件人地址</label>
-                                <input id="address" name="地址" type="text" class="form-control">
+                                <v-field 
+                                    id="address" 
+                                    name="地址" 
+                                    type="text" 
+                                    class="form-control" 
+                                    :class="{ 'is-invalid': errors['地址'] }" 
+                                    placeholder="請輸入地址" 
+                                    rules="required" 
+                                    v-model="order.address"></v-field>
+                                <error-message 
+                                    name="地址" 
+                                    class="invalid-feedback">
+                                </error-message>
                             </div>
 
                             <div class="mb-3">
                                 <label for="message" class="form-label">留言</label>
-                                <textarea name="" id="message" class="form-control" rows="3"></textarea>
+                                <textarea name="" id="message" class="form-control" rows="3" v-model="userMessage"></textarea>
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-danger w-100">送出訂單</button>
+                                <button type="button" class="btn btn-danger w-100 d-flex align-items-center justify-content-center"
+                                @click.prevent="checkout"
+                                :disabled="spinItem == 'checkout'">
+                                <i class="spinner" 
+                                :class="spinItem == 'checkout' ? 'show' : 'fade d-none'"></i>
+                                送出訂單</button>
                             </div>
                         </v-form>
                     </div>
@@ -139,5 +187,8 @@ current: cart
         </div>
     </div>
 </div>
-<modal-detail :detail-data="detailData" @add-to-cart="addToCart">
+<modal-detail 
+:detail-data="detailData"
+:spin-item="spinItem"
+ @add-to-cart="addToCart">
 </modal-detail>

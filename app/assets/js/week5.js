@@ -41,8 +41,13 @@ const app = {
       final_total: '',
       isCheckout: false,
       order: {
-        email: ''
-      }
+        email: '',
+        name: '',
+        tel: '',
+        address: ''
+      },
+      userMessage: '',
+      spinItem: ''
     }
   },
   methods: {
@@ -55,6 +60,10 @@ const app = {
     money (x) {
       const str = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
       return `$${str}`
+    },
+    isPhone (value) {
+      const phoneNumber = /^(09)[0-9]{8}$/
+      return phoneNumber.test(value) ? true : '請輸入正確的電話號碼'
     }
   },
   mounted () {
@@ -66,10 +75,19 @@ const app = {
       this.getUserProducts()
       this.getCarts()
       this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'))
-      Object.keys(VeeValidateRules).forEach(rule => {
-        VeeValidate.defineRule(rule, VeeValidateRules[rule])
-      })
     }
+  },
+  created () {
+    Object.keys(VeeValidateRules).forEach(rule => {
+      if (rule !== 'default') {
+        VeeValidate.defineRule(rule, VeeValidateRules[rule])
+      }
+    })
+    VeeValidateI18n.loadLocaleFromURL('./zh_tw.json')
+    VeeValidate.configure({
+      generateMessage: VeeValidateI18n.localize('zh_TW'),
+      validateOnInput: true
+    })
   }
 }
 Vue.createApp(app)

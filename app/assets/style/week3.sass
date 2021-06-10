@@ -62,6 +62,10 @@ body
 
 .btn
   font-size: $fs-sm
+  &:disabled
+    color: white
+    background: lighten($gray, 30%)
+    border-color: lighten($gray, 10%)
   &:focus
     box-shadow: 0 0 0 transparent
   &-primary
@@ -232,10 +236,6 @@ input[type="checkbox"]
       align-items: center
       cursor: pointer
       margin-top: .5rem
-
-
-      
-      
   &-empty
     width: calc((100% - 1rem) / 3)
     display: flex
@@ -258,6 +258,16 @@ input[type="checkbox"]
   &.active .page-link
     background: $secondary
     border-color: $secondary
+
+.spinner
+  display: inline-block
+  width: 1.15rem
+  height: 1.15rem
+  border-radius: 50%
+  border: 2px solid rgba($yellow-400, .2)
+  border-top: 2px solid $yellow-400
+  margin: 0 .3rem
+  animation: spin .8s linear infinite
       
 @keyframes scale
 	0%, 100%
@@ -272,5 +282,12 @@ input[type="checkbox"]
 		opacity: 0
 	100%
 		opacity: 1
+
+@keyframes spin
+  0%
+    transform: rotate(0deg)
+  100%
+    transform: rotate(360deg)
+    
 	
 	
