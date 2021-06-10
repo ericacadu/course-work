@@ -42,12 +42,29 @@ var app = {
       detailModal: {},
       detailData: {},
       cart: [],
-      final_total: ''
+      final_total: '',
+      isCheckout: false,
+      order: {
+        email: '',
+        name: '',
+        tel: '',
+        address: ''
+      },
+      userMessage: '',
+      spinItem: ''
     };
   },
   methods: _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, login), product), cart), {}, {
     closeModal: function closeModal(modal) {
       modal.hide();
+    },
+    money: function money(x) {
+      var str = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return "$".concat(str);
+    },
+    isPhone: function isPhone(value) {
+      var phoneNumber = /^(09)[0-9]{8}$/;
+      return phoneNumber.test(value) ? true : '請輸入正確的電話號碼';
     }
   }),
   mounted: function mounted() {
@@ -60,6 +77,18 @@ var app = {
       this.getCarts();
       this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
     }
+  },
+  created: function created() {
+    Object.keys(VeeValidateRules).forEach(function (rule) {
+      if (rule !== 'default') {
+        VeeValidate.defineRule(rule, VeeValidateRules[rule]);
+      }
+    });
+    VeeValidateI18n.loadLocaleFromURL('./zh_tw.json');
+    VeeValidate.configure({
+      generateMessage: VeeValidateI18n.localize('zh_TW'),
+      validateOnInput: true
+    });
   }
 };
-Vue.createApp(app).mount('#app');
+Vue.createApp(app).component('VForm', VeeValidate.Form).component('VField', VeeValidate.Field).component('ErrorMessage', VeeValidate.ErrorMessage).mount('#app');

@@ -9314,6 +9314,10 @@ body {
 
 .btn {
   font-size: 0.95rem; }
+  .btn:disabled {
+    color: white;
+    background: #7b8da7;
+    border-color: #4b5a71; }
   .btn:focus {
     -webkit-box-shadow: 0 0 0 transparent;
             box-shadow: 0 0 0 transparent; }
@@ -9560,6 +9564,17 @@ input[type="checkbox"] {
   background: #42587a;
   border-color: #42587a; }
 
+.spinner {
+  display: inline-block;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 205, 57, 0.2);
+  border-top: 2px solid #ffcd39;
+  margin: 0 .3rem;
+  -webkit-animation: spin .8s linear infinite;
+          animation: spin .8s linear infinite; }
+
 @-webkit-keyframes scale {
   0%, 100% {
     -webkit-transform: scaleX(-1);
@@ -9591,3 +9606,19 @@ input[type="checkbox"] {
     opacity: 0; }
   100% {
     opacity: 1; } }
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  100% {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }

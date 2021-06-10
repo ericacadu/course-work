@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>購物車</title>
+    <title>
+        購物車
+    </title>
     <link rel="stylesheet" href="../assets/css/week3.css">
 </head>
+
 <body>
     <div class="container-fluid g-0" id="app">
         <div class="row g-0" :data="check = 'cart'">
@@ -40,26 +44,26 @@
             <!-- 產品列表 -->
             <div class="col-5 col-md-7">
                 <ul class="row g-0 p-0">
-                    <li class="col-md-6 list-unstyled mb-3"
-                    v-for="(item, idx) in products" :key="item.id"
-                    :class="(idx % 2 !== 0) ? 'ps-md-3' : ''">
+                    <li class="col-md-6 list-unstyled mb-3" v-for="(item, idx) in products" :key="item.id"
+                        :class="(idx % 2 !== 0) ? 'ps-md-3' : ''">
                         <div class="card">
                             <div class="card-img-top"
                                 style="height: 200px;background-position: center;background-size: 100% auto;background-repeat: no-repeat;"
                                 :style="{'backgroundImage': `url(${item.imageUrl})`}"></div>
-                            
+
                             <div class="card-body">
                                 <p class="card-title">{{ item.title}}</p>
-                                原價：{{ item.origin_price }}
-                                售價：<span class="text-danger">{{ item.price }}</span>
+                                原價：{{ money(item.origin_price) }}
+                                售價：<span class="text-danger">{{ money(item.price) }}</span>
                             </div>
-                            <div class="card-footer text-end">
-                                <button type="button" class="btn btn-sm btn-secondary"
-                                @click=openProduct(item.id)>
+                            <div class="card-footer btn-group text-end py-3 text-nowrap">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" @click=openProduct(item.id)>
                                     商品細節
                                 </button>
-                                <button type="button" class="btn btn-sm btn-primary ms-2"
-                                @click="addToCart(item, 1)">
+                                <button type="button" class="btn btn-sm btn-primary d-flex align-items-center justify-content-center" @click="addToCart(item, 1)"
+                                :disabled="spinItem === item.id">
+                                    <i class="spinner"
+                                    :class="spinItem === item.id ? 'show' : 'fade d-none'"></i>
                                     加入購物車
                                 </button>
                             </div>
@@ -69,50 +73,142 @@
             </div>
 
             <div class="col-7 col-md-5 ps-3">
-                <!-- 購物車快速結帳 -->
-                <div class="border rounded p-3 bg-white sticky-top" v-if="!final_total">
+                <!-- 購物車 -->
+                <div class="border rounded p-3 bg-white" v-if="!final_total">
                     <h1 class="fs-5">購物車</h1>
                     <p class="alert alert-secondary p-2 text-center m-0">尚未選購商品</p>
                 </div>
                 <div class="border rounded p-3 bg-white sticky-top" v-else>
                     <h1 class="fs-5">購物車</h1>
                     <ul class="list-group list-group-flush d-flex align-item-center">
-                        <li class="list-group-item px-0 d-flex"
-                        v-for="(item, key) in cart.carts" :key="item.product_id">
+                        <li class="list-group-item px-0 d-flex" v-for="(item, key) in cart.carts"
+                            :key="item.product_id">
                             <span class="col-6 m-0">{{ item.product.title }}</span>
                             <span class="col-2">
-                                <input type="number" min="0" class="form-control py-0 px-1" 
-                                v-model.number="item.qty"
-                                @blur="updateUserCarts(item.id, item.qty)">
+                                <input type="number" min="0" class="form-control py-0 px-1" v-model.number="item.qty"
+                                    @blur="updateUserCarts(item.id, item.qty)">
                             </span>
-                            <span class="col-2 m-0 text-end">{{ item.product.price }}</span>
-                            <span class="col-2 material-icons text-secondary text-center"
-                            role="button"
-                            @click="deleteCartProduct(item.id)">cancel</span>
+                            <span class="col-2 m-0 text-end">{{ money(item.product.price) }}</span>
+                            <span class="col-2 material-icons text-secondary text-center" role="button"
+                                @click="deleteCartProduct(item.id)">cancel</span>
                         </li>
                     </ul>
                     <hr>
                     <ul class="list-unstyled text-end">
-                        <li>總價：{{ final_total }}</li>
+                        <li>總價：{{ money(final_total) }}</li>
                     </ul>
-                    <button class="btn btn-lg w-100 btn-primary">結帳</button>
-                    <button class="btn btn-lg w-100 btn-outline-secondary mt-2"
-                    @click.prevent="deleteCart">清空購物車</button>
+                    <button type="button" class="btn btn-lg w-100 btn-primary" @click="isCheckout = true">結帳</button>
+                    <button type="button" class="btn btn-lg w-100 btn-outline-secondary mt-2 d-flex align-items-center justify-content-center"      @click="clearCart"
+                    :disabled="spinItem == true">
+                        <i class="spinner" 
+                        :class="spinItem == true ? 'show' : 'fade d-none'"></i>
+                        清空購物車
+                    </button>
+                    <!-- 結帳 -->
+                    <div class="mt-4" ref="checkout"
+                    :class="isCheckout ? 'show' : 'fade d-none'">
+                        <hr>
+                        <h2 class="fs-5">結帳表單</h2>
+                        <v-form v-slot="{ errors }" ref="form" @submit.prevent="onSubmit">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <v-field 
+                                    id="email" 
+                                    name="Email" 
+                                    type="email" 
+                                    class="form-control" 
+                                    :class="{ 'is-invalid': errors['Email'] }" placeholder="請輸入 Email" 
+                                    rules="email|required" 
+                                    v-model="order.email"></v-field>
+                                <error-message 
+                                    name="Email" 
+                                    class="invalid-feedback">
+                                </error-message>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">收件人姓名</label>
+                                <v-field 
+                                    id="name" 
+                                    name="姓名" 
+                                    type="text" 
+                                    class="form-control" 
+                                    :class="{ 'is-invalid': errors['姓名'] }" 
+                                    placeholder="請輸入姓名" 
+                                    rules="required" 
+                                    v-model="order.name"></v-field>
+                                <error-message 
+                                    name="姓名" 
+                                    class="invalid-feedback">
+                                </error-message>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tel" class="form-label">收件人電話</label>
+                                <v-field 
+                                    id="tel" 
+                                    name="電話" 
+                                    type="tel" 
+                                    class="form-control"
+                                    :rules="isPhone"
+                                    :class="{ 'is-invalid': errors['電話'] }" 
+                                    placeholder="請輸入電話" 
+                                    v-model="order.tel"></v-field>
+                                <error-message 
+                                    name="電話" 
+                                    class="invalid-feedback">
+                                </error-message>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">收件人地址</label>
+                                <v-field 
+                                    id="address" 
+                                    name="地址" 
+                                    type="text" 
+                                    class="form-control" 
+                                    :class="{ 'is-invalid': errors['地址'] }" 
+                                    placeholder="請輸入地址" 
+                                    rules="required" 
+                                    v-model="order.address"></v-field>
+                                <error-message 
+                                    name="地址" 
+                                    class="invalid-feedback">
+                                </error-message>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">留言</label>
+                                <textarea name="" id="message" class="form-control" rows="3" v-model="userMessage"></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-danger w-100 d-flex align-items-center justify-content-center"
+                                @click.prevent="checkout"
+                                :disabled="spinItem == 'checkout'">
+                                <i class="spinner" 
+                                :class="spinItem == 'checkout' ? 'show' : 'fade d-none'"></i>
+                                送出訂單</button>
+                            </div>
+                        </v-form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<modal-detail
-    :detail-data="detailData"
-    :prop-qty="detailData.qty"
-    @add-to-cart="addToCart">
+<modal-detail 
+:detail-data="detailData"
+:spin-item="spinItem"
+ @add-to-cart="addToCart">
 </modal-detail>    </div>
     <script src="https://unpkg.com/vue@next"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vee-validate/4.1.17/vee-validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vee-validate/i18n@4.1.17/dist/vee-validate-i18n.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vee-validate/rules@4.1.17/dist/vee-validate-rules.min.js"></script>
     <script src="../assets/js/vendors.js"></script>
     <script src="../assets/js/week5.js" type="module"></script>
 </body>
-</html>
 
+</html>
