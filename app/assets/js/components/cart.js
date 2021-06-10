@@ -33,7 +33,7 @@ export default {
     axios.post(api, { data: cart }).then(res => {
       if (res.data.success) {
         this.detailData = {}
-        this.detailData.qty = 0
+        this.detailData.qty = 1
         this.getCarts()
         this.closeModal(this.detailModal)
       } else {
@@ -78,6 +78,7 @@ export default {
       if (res.data.success) {
         alert('已清除購物車')
         this.getCarts()
+        this.isCheckout = false
       } else {
         alert()
       }
@@ -90,14 +91,17 @@ export default {
     axios.get(api).then(res => {
       if (res.data.success) {
         this.detailData = res.data.product
-        this.detailData.qty = 0
+        this.detailData.qty = 1
+        this.detailData.origin_price = this.money(this.detailData.origin_price)
+        this.detailData.price = this.money(this.detailData.price)
         this.detailModal.show()
-        console.log('opened：', this.detailData.qty)
       } else {
         alert(res.data.message)
       }
     }).catch(err => {
       console.log(err)
     })
+  },
+  checkout () {
   }
 }

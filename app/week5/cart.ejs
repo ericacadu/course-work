@@ -35,26 +35,23 @@ current: cart
             <!-- 產品列表 -->
             <div class="col-5 col-md-7">
                 <ul class="row g-0 p-0">
-                    <li class="col-md-6 list-unstyled mb-3"
-                    v-for="(item, idx) in products" :key="item.id"
-                    :class="(idx % 2 !== 0) ? 'ps-md-3' : ''">
+                    <li class="col-md-6 list-unstyled mb-3" v-for="(item, idx) in products" :key="item.id"
+                        :class="(idx % 2 !== 0) ? 'ps-md-3' : ''">
                         <div class="card">
                             <div class="card-img-top"
                                 style="height: 200px;background-position: center;background-size: 100% auto;background-repeat: no-repeat;"
                                 :style="{'backgroundImage': `url(${item.imageUrl})`}"></div>
-                            
+
                             <div class="card-body">
                                 <p class="card-title">{{ item.title}}</p>
-                                原價：{{ item.origin_price }}
-                                售價：<span class="text-danger">{{ item.price }}</span>
+                                原價：{{ money(item.origin_price) }}
+                                售價：<span class="text-danger">{{ money(item.price) }}</span>
                             </div>
-                            <div class="card-footer text-end">
-                                <button type="button" class="btn btn-sm btn-secondary"
-                                @click=openProduct(item.id)>
+                            <div class="card-footer btn-group text-end py-3 text-nowrap">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" @click=openProduct(item.id)>
                                     商品細節
                                 </button>
-                                <button type="button" class="btn btn-sm btn-primary ms-2"
-                                @click="addToCart(item, 1)">
+                                <button type="button" class="btn btn-sm btn-primary" @click="addToCart(item, 1)">
                                     加入購物車
                                 </button>
                             </div>
@@ -64,42 +61,83 @@ current: cart
             </div>
 
             <div class="col-7 col-md-5 ps-3">
-                <!-- 購物車快速結帳 -->
-                <div class="border rounded p-3 bg-white sticky-top" v-if="!final_total">
+                <!-- 購物車 -->
+                <div class="border rounded p-3 bg-white" v-if="!final_total">
                     <h1 class="fs-5">購物車</h1>
                     <p class="alert alert-secondary p-2 text-center m-0">尚未選購商品</p>
                 </div>
                 <div class="border rounded p-3 bg-white sticky-top" v-else>
                     <h1 class="fs-5">購物車</h1>
                     <ul class="list-group list-group-flush d-flex align-item-center">
-                        <li class="list-group-item px-0 d-flex"
-                        v-for="(item, key) in cart.carts" :key="item.product_id">
+                        <li class="list-group-item px-0 d-flex" v-for="(item, key) in cart.carts"
+                            :key="item.product_id">
                             <span class="col-6 m-0">{{ item.product.title }}</span>
                             <span class="col-2">
-                                <input type="number" min="0" class="form-control py-0 px-1" 
-                                v-model.number="item.qty"
-                                @blur="updateUserCarts(item.id, item.qty)">
+                                <input type="number" min="0" class="form-control py-0 px-1" v-model.number="item.qty"
+                                    @blur="updateUserCarts(item.id, item.qty)">
                             </span>
-                            <span class="col-2 m-0 text-end">{{ item.product.price }}</span>
-                            <span class="col-2 material-icons text-secondary text-center"
-                            role="button"
-                            @click="deleteCartProduct(item.id)">cancel</span>
+                            <span class="col-2 m-0 text-end">{{ money(item.product.price) }}</span>
+                            <span class="col-2 material-icons text-secondary text-center" role="button"
+                                @click="deleteCartProduct(item.id)">cancel</span>
                         </li>
                     </ul>
                     <hr>
                     <ul class="list-unstyled text-end">
-                        <li>總價：{{ final_total }}</li>
+                        <li>總價：{{ money(final_total) }}</li>
                     </ul>
-                    <button class="btn btn-lg w-100 btn-primary">結帳</button>
-                    <button class="btn btn-lg w-100 btn-outline-secondary mt-2"
-                    @click.prevent="deleteCart">清空購物車</button>
+                    <button type="submit" class="btn btn-lg w-100 btn-primary" @click="isCheckout = true">結帳</button>
+                    <button type="button" class="btn btn-lg w-100 btn-outline-secondary mt-2"
+                    @click="deleteCart">清空購物車</button>
+                    <!-- 結帳 -->
+                    <div class="mt-4" ref="checkout"
+                    :class="isCheckout ? 'show' : 'fade d-none'">
+                        <hr>
+                        <h2 class="fs-5">結帳表單</h2>
+                        <v-form v-slot="{ errors }" @submit="onSubmit">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <v-field 
+                                    id="email" 
+                                    name="email" 
+                                    type="email" 
+                                    class="form-control" 
+                                    :class="{ 'is-invalid': errors['email'] }" placeholder="請輸入 Email" 
+                                    rules="email|required" 
+                                    v-model="order.email"></v-field>
+                                <error-message 
+                                    name="email" 
+                                    class="invalid-feedback">
+                                </error-message>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">收件人姓名</label>
+                                <input id="name" name="姓名" type="text" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tel" class="form-label">收件人電話</label>
+                                <input id="tel" name="電話" type="text" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">收件人地址</label>
+                                <input id="address" name="地址" type="text" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="message" class="form-label">留言</label>
+                                <textarea name="" id="message" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-danger w-100">送出訂單</button>
+                            </div>
+                        </v-form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<modal-detail
-    :detail-data="detailData"
-    :prop-qty="detailData.qty"
-    @add-to-cart="addToCart">
+<modal-detail :detail-data="detailData" @add-to-cart="addToCart">
 </modal-detail>

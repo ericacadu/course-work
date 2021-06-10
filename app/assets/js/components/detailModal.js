@@ -37,20 +37,15 @@ export default {
         </div>
       </div>
     </div>`,
-  props: ['detailData', 'propQty'],
+  props: ['detailData'],
   data () {
     return {
-      qty: 0
+      qty: 1
     }
   },
   watch: {
-    propQty () {
-      this.qty = this.propQty
-      console.log('watch：', this.propQty)
+    detailData () {
+      this.qty = 1
     }
   }
-  // mounted () {
-  //   this.qty = this.propQty
-  //   console.log('mounted', this.propQty)
-  // }
 }

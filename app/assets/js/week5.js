@@ -38,7 +38,11 @@ const app = {
       detailModal: {},
       detailData: {},
       cart: [],
-      final_total: ''
+      final_total: '',
+      isCheckout: false,
+      order: {
+        email: ''
+      }
     }
   },
   methods: {
@@ -47,6 +51,10 @@ const app = {
     ...cart,
     closeModal (modal) {
       modal.hide()
+    },
+    money (x) {
+      const str = x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      return `$${str}`
     }
   },
   mounted () {
@@ -58,7 +66,14 @@ const app = {
       this.getUserProducts()
       this.getCarts()
       this.detailModal = new bootstrap.Modal(document.getElementById('detailModal'))
+      Object.keys(VeeValidateRules).forEach(rule => {
+        VeeValidate.defineRule(rule, VeeValidateRules[rule])
+      })
     }
   }
 }
-Vue.createApp(app).mount('#app')
+Vue.createApp(app)
+  .component('VForm', VeeValidate.Form)
+  .component('VField', VeeValidate.Field)
+  .component('ErrorMessage', VeeValidate.ErrorMessage)
+  .mount('#app')
