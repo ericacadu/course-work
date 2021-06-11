@@ -69,7 +69,7 @@ current: cart
                     <h1 class="fs-5">購物車</h1>
                     <p class="alert alert-secondary p-2 text-center m-0">尚未選購商品</p>
                 </div>
-                <div class="border rounded p-3 bg-white sticky-top" v-else>
+                <div class="border rounded p-3 bg-white sticky-top" v-show="final_total">
                     <h1 class="fs-5">購物車</h1>
                     <ul class="list-group list-group-flush d-flex align-item-center">
                         <li class="list-group-item px-0 d-flex" v-for="(item, key) in cart.carts"
